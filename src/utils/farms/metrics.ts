@@ -27,8 +27,8 @@ export const getMetricClassification = (key: string, value: number): Classificat
 
     case 'Water_Stress':
       // Lower is better for water stress
-      if (value <= 0.3) return { color: 'green-600', label: 'Good' };
-      if (value <= 0.6) return { color: 'orange-300', label: 'Average' };
+      if (value >= 0.3) return { color: 'green-600', label: 'Good' };
+      if (value >= 0.2) return { color: 'orange-300', label: 'Average' };
       return { color: 'red-500', label: 'Poor' };
 
     default:

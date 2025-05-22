@@ -25,7 +25,7 @@ import type { PostgrestSingleResponse } from '@supabase/supabase-js'
 import FarmOverviewCard from '@/components/shared/FarmOverviewCard'
 import { AnimatePresence, motion } from "framer-motion";
 import AnalyticsCard from '@/components/shared/AnalyticsCard'
-import MapCardOverlay from '@/components/ui/MapCardOverlay'
+import MapCardOverlay from '@/components/shared/MapCardOverlay'
 // import { CartesianGrid, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 // import FarmAnalytics, { revenueData } from '@/components/shared/FarmAnalytics'
 import LoadingSkeleton from '@/components/shared/LoadingSkeleton'
@@ -142,7 +142,6 @@ export default function FarmView() {
             let { data: weatherInfo, error }: PostgrestSingleResponse<WeatherDataResponse> =
                 await supabase
                     .from("farm_weather")
-                    // .select("*, activity(*)")
                     .select()
                     .eq("farm_id", farm_id)
                     .single();
@@ -160,7 +159,6 @@ export default function FarmView() {
             let { data: satelliteData, error }: PostgrestSingleResponse<SatelliteDataResponse> =
                 await supabase
                     .from("farm_satellite")
-                    // .select("*, activity(*)")
                     .select()
                     .eq("farm_id", farm_id)
                     .single();
@@ -176,6 +174,7 @@ export default function FarmView() {
 
     const retrieveFarm = async (id: string) => {
         setLoadingFarm(true);
+        console.log("Retrieving...",farmerProfile?.id)
         try {
             // Step 1: Fetch farm data
             const { data: farm, error: farmError }: PostgrestSingleResponse<FarmType> =
@@ -202,14 +201,15 @@ export default function FarmView() {
                     setFarmLocation(center);
                 }
 
+                console.log(farm);
+
                 // Step 2: Fetch weather using farm_id
                 await Promise.all([
                   retrieveWeather(farm.id.toString()),
-                  retrieveSatellite(farm.id.toString())
+                  retrieveSatellite(farm.id.toString()),
                 ]
                 );
                 setFarmData(farm);
-                // setFarmErr(false)
                 generateData(farm);
             } else if (farmError) {
                 throw new Error(farmError.message);
@@ -274,8 +274,6 @@ export default function FarmView() {
         }
     };
 
-
-
     useEffect(() => {
       if(farmData?.crop_types.length){
         getPriceHistory();
@@ -283,10 +281,10 @@ export default function FarmView() {
     }, [farmData]);
 
     useEffect(() => {
-        if (!id ||farmData) return;
-        retrieveFarm(id);
-
-    }, []);
+      if(farmerProfile?.id){
+        retrieveFarm(id as string);
+      }
+    }, [id,farmerProfile?.id]);
 
     // useEffect(() => {
     //     if (prevFarmData !== farmData || !farmData) {

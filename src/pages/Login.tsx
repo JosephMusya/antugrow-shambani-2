@@ -1,13 +1,13 @@
 import React, { useState, useRef, type JSX } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Wallet } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useUserContext } from "@/providers/UserAuthProvider";
 import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import supabase from "@/config/supabase/supabase";
+import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 
 export default function Login(): JSX.Element {
   const [showOtpCard, setShowOtpCard] = useState<boolean>(false);
@@ -286,10 +286,16 @@ export default function Login(): JSX.Element {
         {/* Left Section */}
         <div className="w-1/2 bg-gray-900 text-white flex items-center justify-center p-8">
           <div className="text-center">
-            <Wallet className="w-12 h-12 text-white mx-auto mb-4" />
-            <h2 className="text-xl font-semibold">Antugrow</h2>
+            <Avatar>
+              <AvatarImage
+                className="w-[10rem]"
+                src="./logo.png"
+              >
+
+              </AvatarImage>
+            </Avatar>
             <p className="text-sm text-gray-300 mt-2">
-              Login to your anugrow shambani
+              Login to Antugrow
             </p>
           </div>
         </div>
@@ -306,9 +312,9 @@ export default function Login(): JSX.Element {
               <form className="space-y-6" onSubmit={signUpWithOtp}>
                 <div className="flex flex-col items-start">
                   <p className="text-sm text-gray-500 mt-2 pb-2">
-                    Monitor your farm, & discover investors
+                    Log in to Monitor and Manage Your Farms
                   </p>
-                  <h2 className="text-2xl font-normal text-start">Welcome Back</h2>
+                  <h2 className="text-2xl text-start font-bold">Welcome Back</h2>
                 </div>
                 <Input
                 onChange={(e) => {

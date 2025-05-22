@@ -23,6 +23,7 @@ type FarmContextType = {
         value: FarmType[K]
     ) => void;
     resetFarmCreationDetails: () => void;
+    retrieveFarms:()=>void
 };
 
 const defaultFarmContextValue: FarmContextType = {
@@ -43,6 +44,7 @@ const defaultFarmContextValue: FarmContextType = {
     },
     updateFarmDetails: () => {},
     resetFarmCreationDetails: () => {},
+    retrieveFarms: ()=>{}
 };
 
 const FarmContext = createContext<FarmContextType>(defaultFarmContextValue);
@@ -120,9 +122,8 @@ export const FarmProvider = (props: ProviderProps) => {
 
             if (farms) {
                 const enrichedFarms = await fetchWeatherForFarms(farms);
+                // setFarms([]);
                 setFarms(enrichedFarms);
-
-                console.log(enrichedFarms);
             }
         } catch (error) {
             toast.error("Failed to retrieve farms or weather data");
@@ -214,6 +215,7 @@ export const FarmProvider = (props: ProviderProps) => {
         deleteFarm,
         getProductPrices,
         updateFarmDetails,
+        retrieveFarms
     };
 
     // getProductPriceHistory("Tomato");

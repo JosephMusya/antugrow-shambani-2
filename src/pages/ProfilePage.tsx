@@ -3,21 +3,32 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Edit } from "lucide-react";
 import Sidebar from "@/components/shared/Sidenav";
 import { useUserContext } from "@/providers/UserAuthProvider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditProfileDialog from "@/components/shared/EditProfileDialog";
 import { formatToReadableDate, getTimeAgoObject } from "@/utils/time/formatter";
 import { useFarmContext } from "@/providers/FarmProvider";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import CardSkeleton from "@/components/shared/CardSkeleton";
+import { useLocation } from "react-router-dom";
+import ToolTip from "@/components/shared/ToolTip";
 
 export default function ProfilePage() {
-    const {authUser, farmerProfile}  = useUserContext();
+    const location  = useLocation();
+    const {shouldEditProfile} = location.state || {};
+    const {authUser, farmerProfile, loadingUser}  = useUserContext();
     const {farms} = useFarmContext();
     const [openEditProfile, setOpenEditProfile] = useState(false);
 
-    const editProfile = () =>{
-        console.log("Edit profile");
-        setOpenEditProfile(!openEditProfile);
+    const editProfile = (edit: boolean) =>{
+        setOpenEditProfile(edit);
     }
+
+    useEffect(()=>{
+        if(!farmerProfile?.id)return;
+        shouldEditProfile && !farmerProfile.full_name &&  !farmerProfile.phone && editProfile(true);
+        
+    },[shouldEditProfile, farmerProfile?.id])
+
 
 
         const StarRating = ({ value }: { value: number }) => {
@@ -43,10 +54,14 @@ export default function ProfilePage() {
   return (
     <div className="flex">
       <Sidebar/>
+      {
+        loadingUser ?
+        <CardSkeleton/>:
+      
       <div className="flex-1 md:ml-64 justify-center">
         <div className="p-6 flex items-center justify-center lg:gap-[328px] sm:gap-[28px] border">
             <p className="text-2xl font-bold text-gray-800">Farmers Profile</p>
-
+            
             <div className="flex items-center">
                 <div className="flex-shrink-0">
                 <Avatar>
@@ -98,7 +113,7 @@ export default function ProfilePage() {
                 
                 {/* Centered Metrics */}
             <div className="flex relative justify-between lg:w-[75%] md:w-[80%] sm:w-[95%] gap-6 mb-6">
-               <div className="absolute top-[-2.5rem] right-0 cursor-pointer" onClick={editProfile}>
+               <div className="absolute top-[-2.5rem] right-0 cursor-pointer" onClick={()=>editProfile(true)}>
                         <Edit color="gray" />
                     </div>
                 <div className="text-center">
@@ -107,7 +122,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="text-center">
                     <h2 className="font-bold text-3xl text-green-400">{farmerProfile?.credit ?? 0}</h2>
-                    <h1 className="text-gray-600 mt-2">Credit Score</h1>
+                    <h1 className="text-gray-600 mt-2 flex items-center">Credit Score <ToolTip description="Your overal score on the platform. The more you use the platform, and interact with your farms, the higher the score"/> </h1>
                 </div>
                 <div className="text-center">
                     <h2 className="font-bold text-3xl text-green-400">{getTimeAgoObject(farmerProfile?.created_at as unknown as string).value}</h2>
@@ -134,7 +149,7 @@ export default function ProfilePage() {
                     <p className="text-gray-600">{farmerProfile?.phone ?? "---"}</p>
                 </div>
                 <div className="flex justify-between w-full">
-                <h2 className="font-bold">Credit Score</h2>
+                <h2 className="font-bold flex items-center">Farmer Rating <ToolTip description="This is value is rated out of 5 and is calculated based on your credit score"/> </h2>
                 <StarRating value={farmerProfile?.success_rate ?? 0} />
                 </div>
                 <div className="flex justify-between w-full">
@@ -154,7 +169,7 @@ export default function ProfilePage() {
             </Card>
             <EditProfileDialog open={openEditProfile} onOpenChange={setOpenEditProfile} userId={"user?.id"} />
         </div>
-      </div>
+      </div>}
     </div>
   );
 }

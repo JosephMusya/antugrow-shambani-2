@@ -76,7 +76,7 @@ export const UserProvider = (props: ProviderProps) => {
             ...profileInformation
         }))
     }
-    
+
     const authChange = async() => {
         setLoadingUser(true);
         try {

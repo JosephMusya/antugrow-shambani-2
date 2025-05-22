@@ -169,21 +169,21 @@ export default function Step1() {
 
 
             {polygonPoints.length > 1 && (
-                <div className="pt-2">
+                <div className="">
                     <Button
-                        variant="default"
-                        className="bg-green-600 hover:bg-green-700"
+                        variant="outline"
+                        className="bg-gray-50 hover:bg-gray-70 text-sm"
                         onClick={() => {
                             setPolygonPoints([]);
                             resetFarmCreationDetails();
                         }}
                     >
-                        Reset
+                        Restart Drawing
                     </Button>
                 </div>
             )}
 
-            <div className="w-full pt-2">
+            <div className="w-full">
                 <MapContainer
                     center={center as unknown as google.maps.LatLng}
                     zoom={18}

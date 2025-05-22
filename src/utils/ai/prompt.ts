@@ -10,7 +10,7 @@ export const generatePrompt = (props: PromptProps): string =>{
     console.log(props)
     const refinedPrompt = `You are given the following farm data ${props.satelliteData}, Location:${props.farmData.location_name} Weather: Temperature=${props.weatherData.temperature} degrees celcius, Humidity=${props.weatherData.humidity}%. Using this data, return a JSON formatted response with the following fields "farm_health": A string value — "Good", "Average", or "Poor" based on based on these overal conditions
 
-    "potential_pests": A list of strings indicating pests likely to affect the crop under these conditions.
+    "potential_pests": A list of strings indicating pests likely to affect the crop under these conditions from weather and satellite.
 
     "crop_stage_match": An object with:
 

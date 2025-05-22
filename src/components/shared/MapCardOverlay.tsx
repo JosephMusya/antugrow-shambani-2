@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Button } from './button'
-import { Cloud, Rss, Satellite, Sparkles } from 'lucide-react'
+import { Button } from '../ui/button'
+import { Cloud, Rss, Satellite, Sparkles, X } from 'lucide-react'
 import { FaSatellite } from 'react-icons/fa'
 import {
   DropdownMenu,
@@ -11,7 +11,7 @@ import {
 import { Card, CardContent, CardTitle, } from '@/components/ui/card'
 import type { FarmType, SatelliteDataResponse } from '@/types/Types';
 import { getMetricClassification } from '@/utils/farms/metrics';
-import { Badge } from './badge';
+import { Badge } from '../ui/badge';
 import type { Tabs } from '@/pages/FarmView';
 
 type OverlayProps = {farmData: FarmType| undefined, satelliteData: SatelliteDataResponse|undefined, onToggleTab: (tab:  Tabs)=>void}
@@ -27,7 +27,7 @@ const CropMetrics = ({ data }: { data: SatelliteDataResponse }) => {
   return (
     <div className='flex flex-col gap-4'>
       {Object.entries(data).map(([key, value]) => {
-        if (['farm_id', 'id', 'created_at'].includes(key)) return null;
+        if (['farm_id', 'id', 'created_at', 'NDVI'].includes(key)) return null;
 
         const {color, label} = getMetricClassification( key, value as number);
 
@@ -117,7 +117,11 @@ export default function MapCardOverlay(props: OverlayProps) {
                 </DropdownMenu>
               </div>
               <div className='flex flex-col gap-4'>
-                <CropMetrics data={props.satelliteData as SatelliteDataResponse}/>
+                {
+                  props.satelliteData ?
+                <CropMetrics data={props.satelliteData as SatelliteDataResponse}/>:
+                  <p className='text-sm text-red-500 flex gap-2 items-center'> <X size={15}/> {selectedSource} data not available</p>
+                }
                 <Button className='mt-1 bg-green-600 cursor-pointer' onClick={()=>props.onToggleTab("Analytics")}>
                     <span>
                 <Sparkles/>

@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { TrendingUp, TrendingDown } from "lucide-react"
 import { useFarmContext } from "@/providers/FarmProvider";
+import CardSkeletonMinimal from "./CardSkeletonMinimal";
 
 export default function MarketPrices() {
-  const {priceHistory} = useFarmContext();
+  const {priceHistory, loadingPrices} = useFarmContext();
 
     // type Durations = "2 Weeks"|"1 Month"|"3 Months"|"6 Months" | "1 Year";
 
@@ -24,7 +25,7 @@ export default function MarketPrices() {
           <TrendingUp className="mr-2 h-4 w-4" />
           <p>Market Prices</p>
         </div>
-        <p className="text-gray-500 text-[12px]">3 Months</p>
+        <p className="text-gray-500 text-[11px]">3 Months ago</p>
         {/* <div className="relative">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -46,15 +47,18 @@ export default function MarketPrices() {
           </DropdownMenu>
         </div> */}
       </CardTitle>
-
       </CardHeader>
+      {
+        loadingPrices ?
+        <CardSkeletonMinimal/>:
+      
       <CardContent>
         <div className="space-y-4">
           {priceHistory?.map((item, key) => (
             <div key={key} className="flex items-center justify-between">
               <div>
-                <p className="font-medium">{item?.analysis.crop}</p>
-                <p className="text-sm text-gray-500">Per kg</p>
+                <p className="font-medium text-sm">{item?.analysis.crop}</p>
+                <p className="text-sm text-gray-500 text-[11px]">Per kg</p>
               </div>
               <div className="text-right">
                 <p className="font-bold">KSh {item?.analysis?.new_price}</p>
@@ -70,13 +74,12 @@ export default function MarketPrices() {
             </div>
           ))}
         </div>
-
         <div className="mt-4 pt-3 border-t border-gray-100 text-center">
           <a href="#" className="text-sm text-green-600 hover:underline">
             View all market prices
           </a>
         </div>
-      </CardContent>
+      </CardContent>}
     </Card>
   )
 }

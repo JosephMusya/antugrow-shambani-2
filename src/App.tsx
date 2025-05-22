@@ -16,7 +16,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/user-profile" element={<ProfilePage/>} />
             <Route path="/add-farm" element={<AddFarm/>} />
-            <Route path="/dashboard/farmview/:id" element={<FarmView/>} />
+            <Route path="/farm/:id" element={<FarmView/>} />
           </Route>
       </Routes>
     </div>

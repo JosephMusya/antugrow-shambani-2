@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { farmStages } from "@/utils/farms/farm";
+import ToolTip from "./ToolTip";
 
 export default function Step2() {
   const { updateFarmDetails, farmCreationDetails } = useFarmContext();
@@ -36,7 +37,7 @@ export default function Step2() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="crops">Crops</Label>
+        <Label htmlFor="crops">Crops *</Label>
         <Input
           id="crops"
           placeholder="Maize, Potatoes"
@@ -51,16 +52,18 @@ export default function Step2() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="farmStage">Farm Stage</Label>
+        <div className="flex items-center">
+          <Label htmlFor="farmStage">Crop Stage *</Label>
+          <ToolTip description="These are 6 stages that indicate the stage of your crops"/>
+        </div>
         <Select
             onValueChange={(selectedStage) => {
-
             console.log(selectedStage)
                 updateFarmDetails("farm_stage", farmStages[parseInt(selectedStage)]);
             }}
         >
             <SelectTrigger id="farmStage">
-            <SelectValue placeholder="Select a farm stage" />
+            <SelectValue placeholder="Select your crop stage"/>
             </SelectTrigger>
             <SelectContent>
             {farmStages.map((stage) => (

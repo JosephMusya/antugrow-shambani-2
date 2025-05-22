@@ -80,6 +80,12 @@ export default function EditProfileDialog({ open, onOpenChange }: AddFarmDialogP
             <DialogHeader>
               <DialogTitle>Edit Profile</DialogTitle>
               <DialogDescription>Enter your profile information.</DialogDescription>
+              {
+                !farmerProfile?.full_name && <p className="text-[12px] text-red-400">• Your profile is missing your username</p> 
+              }
+              {
+                !farmerProfile?.phone && <p className="text-[12px] text-red-400">• Your profile is missing a phone number</p> 
+              }
             </DialogHeader>
 
             <div className="grid gap-4 py-4">
@@ -154,11 +160,11 @@ export default function EditProfileDialog({ open, onOpenChange }: AddFarmDialogP
             </div>
 
             <DialogFooter>
-              <Button type="button" variant="outline" className="cursor-pointer" onClick={() => onOpenChange(false)}>
+              <Button disabled={(!farmerProfile?.full_name || !farmerProfile?.phone)} type="button" variant="outline" className="cursor-pointer" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
               <Button type="submit" className="bg-green-600 hover:bg-green-700 cursor-pointer" disabled={isSubmitting}>
-                {isSubmitting ? "Adding..." : "Add Farm"}
+                {isSubmitting ? "Submitting..." : "Submit Profile"}
               </Button>
             </DialogFooter>
           </form>
