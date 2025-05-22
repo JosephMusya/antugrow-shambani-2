@@ -1,0 +1,386 @@
+import React, { useState, useRef, type JSX } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Wallet } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { toast } from "sonner";
+import { useUserContext } from "@/providers/UserAuthProvider";
+import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import supabase from "@/config/supabase/supabase";
+
+export default function Login(): JSX.Element {
+  const [showOtpCard, setShowOtpCard] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [otpDigits, setOtpDigits] = useState<string[]>(Array(6).fill(""));
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [email, setEmail] = useState<string>("");
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const { toggleLogin, updateCreditScore } = useUserContext();
+  const [errors, setErrors] = useState({ email: "", otp: "" });
+  const navigate = useNavigate();
+
+  console.log({setSessionId});
+
+
+   const validateEmail = (email: string) => {
+        let error = "";
+        if (!email.trim()) {
+            error = "Email is required";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+            error = "Enter a valid email";
+        }
+        return error;
+    };
+
+   async function signUpWithOtp(e: React.FormEvent) {
+
+      e.preventDefault();
+
+      setLoading(true);
+
+      try {
+        const emailError = validateEmail(email);
+
+        if (emailError) {
+            setErrors((prev) => ({ ...prev, email: emailError }));
+            return;
+        }
+
+        const { error } = await supabase.auth.signInWithOtp({
+            email,
+            options: {
+              data: {
+                user_type:"farmer"
+              }
+            }
+        })
+
+        if (error) {
+            return {
+                success: false,
+                error: error.message,
+            }
+        }
+        setShowOtpCard(true);
+      } catch(error){
+
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        setErrors((prev) => ({ ...prev, email: errorMsg }));
+
+      } finally {
+        setLoading(false);
+      }
+}
+
+
+  
+
+  // const handleSendOTP =  async (e: FormEvent<HTMLFormElement>) =>  {
+  //   e.preventDefault();
+  //   setLoading(true);
+
+
+  //   const emailError = validateEmail(email);
+  //   if (emailError) {
+  //       setErrors((prev) => ({ ...prev, email: emailError }));
+  //       return;
+  //   }
+
+  //   try {
+  //       // Use your custom API endpoint to send OTP
+  //       const response = await fetch(
+  //           `${import.meta.env.VITE_BASE_URL}/api/send-otp`,
+  //           {
+  //               method: "POST",
+  //               headers: { "Content-Type": "application/json" },
+  //               body: JSON.stringify({ email }),
+  //           }
+  //       );
+
+  //       if (!response.ok) {
+  //           const error = await response.json();
+  //           throw new Error(
+  //               error.message || "Failed to send verification code"
+  //           );
+  //       }
+
+  //       const data = await response.json();
+  //       setSessionId(data.sessionId);
+  //       setShowOtpCard(true);
+  //       toast.success("Verification code sent to your email");
+  //   } catch (error) {
+  //       toast.error(
+  //           error instanceof Error
+  //               ? error.message
+  //               : "Failed to send verification code"
+  //       );
+  //   } finally {
+  //       setLoading(false);
+  //   }    
+  // };
+
+  async function verifyOtp(e: React.FormEvent) {
+
+    e.preventDefault();
+
+     if (otpDigits.some((digit) => digit.trim() === "")) {
+      setErrors((prev) => ({
+        ...prev,
+        otp: "Verification code is required",
+      }));
+      return;
+    }
+
+    const otp = String(otpDigits.join(""));
+
+    setLoading(true);
+
+    const {
+        data: {user},
+        error,
+    } = await supabase.auth.verifyOtp({
+        email, 
+        token:otp, 
+        type: "email",
+    })
+
+    try  {
+      if (error) {
+        // Instead of returning, throw an error that can be caught by the client
+        throw new Error(error.message)
+    }
+    if (!user) {
+        throw new Error("User not found")
+    }
+
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/create-wallet`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            email,
+            user_id: user.id,
+        }),
+    });
+
+    if (response.status === 200){
+      updateCreditScore(15);
+      console.log("Wallet created");
+    }
+
+    } catch(error){
+      const errorMessage =
+          error instanceof Error ? error.message : String(error);
+
+        setErrors((prev) => ({
+          ...prev,
+          otp: errorMessage,
+        }));
+    } finally {
+      setLoading(false);
+    }
+}
+
+  const handleVerifyOTP = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (loading || !sessionId) return;
+
+     if (otpDigits.some((digit) => digit.trim() === "")) {
+      setErrors((prev) => ({
+        ...prev,
+        otp: "Verification code is required",
+      }));
+      return;
+    }
+
+      const otp = String(otpDigits.join(""));
+
+      setLoading(true);
+      console.log(otp)
+      try {
+          // Use your custom API endpoint to verify OTP
+          const response = await fetch(
+              `${import.meta.env.VITE_BASE_URL}/api/verify-otp`,
+              {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ otp, sessionId, email }),
+              }
+          );
+
+          if (!response.ok) {
+              const error = await response.json();
+              throw new Error(error.message || "Verification failed");
+          }
+
+          const data = await response.json();
+          console.log(data);
+          if (!data.success) {
+              throw new Error(data.message || "Verification failed");
+          }
+
+          // Store authentication state after successful verification
+          localStorage.setItem("userEmail", email);
+          localStorage.setItem("authToken", data.token || sessionId);
+          if (data.userId) {
+              localStorage.setItem("userId", data.userId);
+          }
+
+          // Update login state in UserContext
+          if (toggleLogin) {
+              toggleLogin(true);
+          }
+
+          toast.success("Login successful!");
+          updateCreditScore(5);
+          navigate("/");
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+
+        setErrors((prev) => ({
+          ...prev,
+          otp: errorMessage,
+        }));
+      }
+      finally {
+          setLoading(false);
+      }
+  };
+  console.log(handleVerifyOTP)
+
+  const handleOtpChange = (index: number, value: string): void => {
+    if (!/^\d?$/.test(value)) return;
+
+    setErrors((prev)=>({
+      ...prev,
+      otp:""
+    }))
+
+    const newOtp = [...otpDigits];
+    newOtp[index] = value;
+    setOtpDigits(newOtp);
+
+    if (value && index < 5 && inputRefs.current[index + 1]) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ): void => {
+    if (e.key === "Backspace" && !otpDigits[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  return (
+    <div
+      className="h-screen w-screen bg-cover bg-center flex items-center justify-center"
+      style={{ backgroundImage: `url('/background.jpg')` }}
+    >
+      <div className="w-[60dvw] h-[70vh] bg-white/90 rounded-2xl shadow-xl flex overflow-hidden">
+        {/* Left Section */}
+        <div className="w-1/2 bg-gray-900 text-white flex items-center justify-center p-8">
+          <div className="text-center">
+            <Wallet className="w-12 h-12 text-white mx-auto mb-4" />
+            <h2 className="text-xl font-semibold">Antugrow</h2>
+            <p className="text-sm text-gray-300 mt-2">
+              Login to your anugrow shambani
+            </p>
+          </div>
+        </div>
+
+        {/* Right Section */}
+        <div className="w-1/2 h-[70vh] relative overflow-hidden flex items-center justify-center">
+          {/* Login Card */}
+          <div
+            className={`absolute top-1/2 left-0 w-full transform -translate-y-1/2 transition-all duration-500 ease-in-out ${
+              showOtpCard ? "-translate-x-full opacity-0" : "translate-x-0 opacity-100"
+            }`}
+          >
+            <Card className="p-10 w-full max-w-sm mx-auto">
+              <form className="space-y-6" onSubmit={signUpWithOtp}>
+                <div className="flex flex-col items-start">
+                  <p className="text-sm text-gray-500 mt-2 pb-2">
+                    Monitor your farm, & discover investors
+                  </p>
+                  <h2 className="text-2xl font-normal text-start">Welcome Back</h2>
+                </div>
+                <Input
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  setErrors({email:"", otp:""})
+                }}
+                type="email" placeholder="Email" required />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
+                <Button disabled={loading} type="submit" className="w-full bg-green-700 cursor-pointer">
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Loading...
+                    </>
+                  ) : (
+                    "Send OTP"
+                  )}
+                </Button>
+              </form>
+            </Card>
+          </div>
+
+          {/* OTP Card */}
+          <div
+            className={`absolute top-1/2 left-0 w-full transform -translate-y-1/2 transition-all duration-500 ease-in-out ${
+              showOtpCard ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
+            }`}
+          >
+            <Card className="p-6 w-full max-w-sm mx-auto text-center">
+              <form action="" onSubmit={verifyOtp}>
+                <h3 className="text-lg font-medium">Enter OTP</h3>
+                <p className="text-sm text-gray-500 mt-2 pb-2">
+                    An OTP was sent to {email}
+                </p>
+                <div className="flex justify-between gap-2 mb-4">
+                    {otpDigits.map((digit, index) => (
+                      <input
+                        key={index}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={digit}
+                        onChange={(e) => handleOtpChange(index, e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(index, e)}
+                        ref={(el: HTMLInputElement | null) => {
+                          inputRefs.current[index] = el;
+                        }}
+                        className="w-10 h-12 text-center text-lg border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-600"
+                      />
+                    ))}
+                  </div>
+                    {errors.otp && (
+                      <p className="text-red-500 text-sm mt-1 mb-3">{errors.otp}</p>
+                    )}
+                  <Button disabled={loading} type="submit" className="w-full bg-green-700 cursor-pointer">
+
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Loading...
+                      </>
+                    ) : (
+                    "Verify OTP"
+                  )}
+                </Button>
+              </form>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
