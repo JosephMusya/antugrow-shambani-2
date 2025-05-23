@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ConnectBtn } from "../components/connectButton";
 import { useAccount } from "wagmi";
 import Sidebar from "@/components/shared/Sidenav"
-import { TokenBalance, MintTokenForm, CreateFundingForm, VerifyFarmerForm, RepayForm } from "../components/walletComponents";
+import { TokenBalance, CreateFundingForm } from "../components/walletComponents";
 import { FundingsList } from "../components/fundingComponents";
 
 export default function Home() {

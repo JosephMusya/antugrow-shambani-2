@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseUnits, formatUnits } from 'viem';
-import {factoryAbi, fundingAbi, tokenAbi} from "../../abis/abis";
+import {factoryAbi, tokenAbi} from "../../abis/abis";
 // Contract addresses - replace with your deployed contract addresses
 const TOKEN_ADDRESS = "0xCeBcf96B5153B7DE009dad99BA4Fc42689376610"; // Your FarmToken address
 const FACTORY_ADDRESS = "0x22fCf53F2d4416D962cb34c961815fc91330f4c3"; // Your FarmFundingFactory address
@@ -49,7 +49,6 @@ export function TokenBalance() {
 export function MintTokenForm() {
     const [amount, setAmount] = useState('');
     const [recipient, setRecipient] = useState('');
-    const { address } = useAccount();
 
     const { writeContract, data: hash, error, isPending } = useWriteContract();
     const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
