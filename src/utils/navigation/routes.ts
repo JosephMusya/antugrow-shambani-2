@@ -31,6 +31,6 @@ export const navItems: NavigationItem[] = [
   { name: "Crop Management", href: "/#", icon: Leaf },
   { name: "Expert Advice", href: "/#", icon: MessageSquare },
   { name: "Records", href: "/#", icon: FileText },
-  { name: "Funding", href: "/#", icon: Wallet },
+  { name: "Funding", href: "/funding", icon: Wallet },
   { name: "Settings", href: "/#", icon: Settings },
 ]
