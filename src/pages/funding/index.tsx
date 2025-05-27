@@ -23,24 +23,24 @@ export default function Home() {
 
             {/* Main Content Area */}
             <div className="flex-1 md:ml-64">
-                {/* Header */}
-                {/*<header className="sticky top-0 z-10 backdrop-blur-md bg-white/90 dark:bg-slate-900/90 border-b border-emerald-200/50 dark:border-slate-700/50 shadow-sm">*/}
-                {/*    <div className="flex h-16 items-center justify-between px-4 sm:px-6">*/}
-                {/*        /!*<div className="flex items-center gap-4 min-w-0">*!/*/}
-                {/*        /!*    <div className="flex items-center gap-3">*!/*/}
-                {/*        /!*        <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">*!/*/}
-                {/*        /!*            <img src="/logo.png" />*!/*/}
-                {/*        /!*        </div>*!/*/}
-                {/*        /!*        <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">*!/*/}
-                {/*        /!*            Antugrow Wallet*!/*/}
-                {/*        /!*        </h2>*!/*/}
-                {/*        /!*    </div>*!/*/}
-                {/*        /!*</div>*!/*/}
-                {/*        <div className="flex items-center gap-4 flex-shrink-0">*/}
-                {/*            <ConnectBtn />*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*</header>*/}
+
+                <header className="sticky top-0 z-10 backdrop-blur-md bg-white/90 dark:bg-slate-900/90 border-b border-emerald-200/50 dark:border-slate-700/50 shadow-sm">
+                    <div className="flex h-16 items-center justify-between px-4 sm:px-6">
+                        <div className="flex items-center gap-4 min-w-0">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
+                                    <img src="/logo.png" />
+                                </div>
+                                <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
+                                    Antugrow Wallet
+                                </h2>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-4 flex-shrink-0">
+                            <ConnectBtn />
+                        </div>
+                    </div>
+                </header>
 
                 {/* Main Content */}
                 <main className="p-4 sm:p-6 lg:p-8">
