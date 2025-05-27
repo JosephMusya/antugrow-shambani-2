@@ -24,23 +24,23 @@ export default function Home() {
             {/* Main Content Area */}
             <div className="flex-1 md:ml-64">
                 {/* Header */}
-                <header className="sticky top-0 z-10 backdrop-blur-md bg-white/90 dark:bg-slate-900/90 border-b border-emerald-200/50 dark:border-slate-700/50 shadow-sm">
-                    <div className="flex h-16 items-center justify-between px-4 sm:px-6">
-                        <div className="flex items-center gap-4 min-w-0">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
-                                    <Sprout className="w-5 h-5 text-white" />
-                                </div>
-                                <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
-                                    Antugrow Funding
-                                </h2>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-4 flex-shrink-0">
-                            <ConnectBtn />
-                        </div>
-                    </div>
-                </header>
+                {/*<header className="sticky top-0 z-10 backdrop-blur-md bg-white/90 dark:bg-slate-900/90 border-b border-emerald-200/50 dark:border-slate-700/50 shadow-sm">*/}
+                {/*    <div className="flex h-16 items-center justify-between px-4 sm:px-6">*/}
+                {/*        /!*<div className="flex items-center gap-4 min-w-0">*!/*/}
+                {/*        /!*    <div className="flex items-center gap-3">*!/*/}
+                {/*        /!*        <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">*!/*/}
+                {/*        /!*            <img src="/logo.png" />*!/*/}
+                {/*        /!*        </div>*!/*/}
+                {/*        /!*        <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">*!/*/}
+                {/*        /!*            Antugrow Wallet*!/*/}
+                {/*        /!*        </h2>*!/*/}
+                {/*        /!*    </div>*!/*/}
+                {/*        /!*</div>*!/*/}
+                {/*        <div className="flex items-center gap-4 flex-shrink-0">*/}
+                {/*            <ConnectBtn />*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</header>*/}
 
                 {/* Main Content */}
                 <main className="p-4 sm:p-6 lg:p-8">
@@ -50,31 +50,25 @@ export default function Home() {
                                 <div className="text-center space-y-6 max-w-lg w-full">
                                     <div className="relative">
                                         <div className="w-24 h-24 mx-auto bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
-                                            <Sprout className="w-12 h-12 text-white" />
+                                            <img src="/logo.png" />
                                         </div>
-                                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-pulse"></div>
+                                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-600 rounded-full animate-pulse"></div>
                                     </div>
                                     <div className="space-y-3">
                                         <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-slate-100">
-                                            Welcome to{" "}
+                                            Welcome to your{" "}
                                             <span className="bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
-                        Antugrow
+                        Antugrow Wallet
                       </span>
                                         </h1>
                                         <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed">
-                                            Empowering sustainable agriculture through decentralized funding. Connect your wallet to access
+                                            Connect your wallet to access
                                             funding opportunities.
                                         </p>
+
                                     </div>
-                                    <div className="flex flex-col sm:flex-row gap-3 justify-center items-center pt-4">
-                                        <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                                            <Users className="w-4 h-4" />
-                                            <span>Join 1,200+ farmers</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                                            <DollarSign className="w-4 h-4" />
-                                            <span>$2.4M+ funded</span>
-                                        </div>
+                                    <div className="flex items-center justify-center">
+                                        <ConnectBtn />
                                     </div>
                                 </div>
                             </div>

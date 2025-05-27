@@ -116,6 +116,7 @@ export function TokenBalance() {
                                         ANT
                                     </div>
                                 )}
+                                <h6 className="text-sm text-emerald-100/80 font-mono">1 ANT = 1 KES</h6>
 
                                 {/* Balance Status */}
                             </>
