@@ -29,7 +29,7 @@ export const ConnectBtn = () => {
     if (!isConnected) {
         return (
             <button
-                className="btn"
+                className="btn bg-gradient-to-r from-emerald-600 to-green-600 px-3 py-3 rounded-lg text-white"
                 onClick={async () => {
                     // Disconnecting wallet first because sometimes when is connected but the user is not connected
                     if (isConnected) {
